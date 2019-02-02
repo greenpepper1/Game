@@ -5,7 +5,9 @@ environment = Environment()
 
 class Building():
     def showStock(self):
+        print("Building stock")
         print(self.stock)
+        print("")
 
     def baseRunningCosts(self):
         self.stock["water"] -= 5
@@ -23,12 +25,12 @@ class Building():
             self.stock[self.product] = 0
 
     def buyProduce(self,product):
-        self.stock["cash"] = self.environment.buyStock(product,55) ## Need to adjust the cash not set it!
+        self.stock["cash"] -= self.environment.buyStock(product,55) ## Need to adjust the cash not set it!
         self.stock[product] += 55
 
     def checkIfZero(self):
-        while(not(all(value > -1 for value in self.stock.values()))):
-            print(self.stock)
+        if(not(all(value > -1 for value in self.stock.values()))):
+            # print(self.stock)
             for product in self.stock.keys():
                 if self.stock[product] < 0 and not(product=="cash"):
                     self.buyProduce(product)

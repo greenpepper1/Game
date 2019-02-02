@@ -22,3 +22,4 @@ EnvironmentPrice = {
 "minerals": 10,
 "alloys": 10,
 }
+

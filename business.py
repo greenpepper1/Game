@@ -22,4 +22,6 @@ class Business():
             hold.getStock()
 
     def showStock(self):
+        print("Business stock")
         print(self.stock)
+        print("")

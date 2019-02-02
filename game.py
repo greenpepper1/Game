@@ -2,7 +2,7 @@ from business import Business
 
 class Top():
     def __init__(self):
-        self.companies = [Business(), Business()]
+        self.companies = [Business()]
 
     def showCompanyStocks(self):
         for company in self.companies:
@@ -18,11 +18,21 @@ class Top():
 
 test = Top()
 
+print("company stocks:")
 test.showCompanyStocks()
+print("")
+print("company Holdings:")
 test.showCompanyHoldings()
+print("")
+print("")
 
 for x in range (10):
     test.turnOver()
 
+    print("company stocks:")
     test.showCompanyStocks()
+    print("")
+    print("company Holdings:")
     test.showCompanyHoldings()
+    print("")
+    print("")
