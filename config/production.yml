@@ -1,0 +1,23 @@
+Credits:
+- 1000
+
+Electric:
+  Production: 200
+  Consumtion:
+    Minerals: 50
+
+Water:
+  Production: 100
+  Consumtion: 
+    Electric: 50
+
+Food:
+  Production: 100
+  Consumtion:
+    Water: 50
+    Electric: 50
+
+Minerals:
+  Production: 100
+  Consumtion:
+    Electric: 50

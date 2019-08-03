@@ -1,100 +1,66 @@
-from stock import stock
-from envirnement import Environment
+from environnement import Environnement
+from random import randint, choice
+import yaml
 
-environment = Environment()
+Environnement = Environnement()
 
-class Building():
-    def showStock(self):
-        print("Building stock")
-        print(self.stock)
-        print("")
+class BuildingProcess():
 
-    def baseRunningCosts(self):
-        self.stock["water"] -= 5
-        self.stock["electric"] -= 5
+    def buyProduce(self,credit):
+        for x in range (len(self.consumtion)):
+            if (Environnement.stock[self.consumtion[x]] > 0):
+                credit -= Environnement.buyStock(self.consumtion[x],self.consumtion_amount[x])
+            else:
+                credit -= 2000
+        return credit
 
-    def setStock(self,stock):
-        self.stock = stock
-
-    def getStock(self):
-        return self.stock
-
-    def sellProduce(self):
-        if(self.stock[self.product] > 0):
-            self.stock["cash"] += self.environment.sellStock(self.product,self.stock[self.product])
-            self.stock[self.product] = 0
-
-    def buyProduce(self,product):
-        self.stock["cash"] -= self.environment.buyStock(product,55) ## Need to adjust the cash not set it!
-        self.stock[product] += 55
-
-    def checkIfZero(self):
-        if(not(all(value > -1 for value in self.stock.values()))):
-            # print(self.stock)
-            for product in self.stock.keys():
-                if self.stock[product] < 0 and not(product=="cash"):
-                    self.buyProduce(product)
+    def sellProduce(self,credit):
+        credit += Environnement.sellStock(self.product,self.product_amount)
+        return credit
 
     def turnOver(self):
-        self.stock["cash"] -= 10
+        Environnement.turnOver()
 
-        self.checkIfZero()
-        self.baseRunningCosts()
-        self.specialRunningCosts()
-        self.manufacture()
-        self.sellProduce()
-        self.environment.showEnvironmentStock()
-        self.environment.turnOver()
+    def showEnv(self):
+        Environnement.showEnvironnementStock()
+        Environnement.showEnvironnementPrice()
 
-class Mine(Building):
+
+class Building(BuildingProcess):
     def __init__(self):
-        self.product = "minerals"
-        self.stock = stock
-        self.environment = environment
+        self.product = []
+        self.product_amount = []
+        self.consumtion = []
+        self.consumtion_amount = []
+        self.setup()
 
-    def specialRunningCosts(self):
-        self.stock["water"] -= 5
-        self.stock["electric"] -= 20
+    def setup(self):
+        with open("config/production.yml", 'r') as stream:
+            data_loaded = yaml.safe_load(stream)
 
-    def manufacture(self):
-        self.stock[self.product] += 50
+        del data_loaded["Credits"]
 
-class Farm(Building):
-    def __init__(self):
-        self.product = "food"
-        self.stock = stock
-        self.environment = environment
+        items = []
+        for key in data_loaded.keys():
+            items.append(key)
 
-    def specialRunningCosts(self):
-        self.stock["water"] -= 35
-        self.stock["electric"] -= 20
+        material = choice(items)
+        
+        self.product = material
+        self.product_amount = data_loaded[material]["Production"]
+        for key in data_loaded[material]["Consumtion"].keys():
+            self.consumtion.append(key)
+            self.consumtion_amount.append(data_loaded[material]["Consumtion"][key])
 
-    def manufacture(self):
-        self.stock[self.product] += 50
+    def showProductAndConsumtion(self):
+        print("product: {}".format(self.product))
+        print("consumtion: {}".format(self.consumtion))
 
-class PowerPlant(Building):
-    def __init__(self):
-        self.product = "electric"
-        self.stock = stock
-        self.environment = environment
-
-    def specialRunningCosts(self):
-        self.stock["minerals"] -= 50
-
-    def manufacture(self):
-        self.stock[self.product] += 25
-
-class Factory(Building):
-    def __init__(self):
-        self.product = "alloys"
-        self.stock = stock
-        self.environment = environment
-
-    def specialRunningCosts(self):
-        self.stock["minerals"] -= 50
-        self.stock["electric"] -= 50
-
-    def manufacture(self):
-        self.stock[self.product] += 25
-
-Buildings = [Mine(), Farm(), PowerPlant(), Factory()]
+if __name__ == "__main__":
+    Environnement.showEnvironnementPrice()
+    Environnement.showEnvironnementStock()
+    building = Building()
+    building.showProductAndConsumtion()
+    credit = 100
+    credit = building.buyProduce(credit)
+    print("credit: {}".format(credit))

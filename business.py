@@ -1,27 +1,38 @@
-from buildings import Buildings
-from stock import stock
+from buildings import Building
 from random import randint, choice
-from copy import deepcopy
-
-# print(randint(0, 9))
-# random.choice(d.keys())
 
 class Business():
     def __init__(self):
-        self.holdings = [choice(Buildings)]
-        self.stock = deepcopy(stock)
+        self.holdings = [Building(),Building()]
+        self.credit = 100
+        self.currentShare = int(self.credit/1000)
+        self.actShare = int(self.credit/1000)
 
     def showHoldings(self):
         for hold in self.holdings:
-            print(hold.product)
+            print("comp product: {}".format(hold.product))
 
-    def turnOver(self):
+    def showEnv(self):
+        self.holdings[0].showEnv()
+    
+    def showValue(self):
+        print("credit: {}".format(self.credit))
+        print("actShare: {}".format(self.actShare))
+        print("currentShare: {}".format(self.currentShare))
+
+    def businessTurnOver(self):
         for hold in self.holdings:
-            hold.setStock(self.stock)
-            hold.turnOver()
-            hold.getStock()
+            self.credit = hold.sellProduce(self.credit)
+            self.credit = hold.buyProduce(self.credit)
 
-    def showStock(self):
-        print("Business stock")
-        print(self.stock)
-        print("")
+        if (self.credit > 5000):
+            self.holdings.append(Building())
+            print("new building: {}".format(self.holdings[-1].product))
+            self.credit -= 5000
+        self.actShare = int((self.credit + (len(self.holdings)-2) * 5000)/100)
+        self.currentShare = int((self.actShare - self.currentShare) /2)
+
+    def envirenmentTurnOver(self):
+        self.holdings[0].turnOver()
+
+if __name__ == "__main__":
